@@ -27,8 +27,8 @@ export default {
     items: [
       { icon: "fa fa-dashboard", text: "Dashboard", path: "/" },
       {
-        icon: "fas fa-th",
-        text: "Productos",
+        icon: "fas fa-warehouse",
+        text: "Almacenes",
         children: [
           { icon: "far fa-circle", text: "Productos", path: "/configuration/opcion1" },
           { icon: "far fa-circle", text: "Servicios", path: "/configuration/opcion2" },
@@ -36,16 +36,24 @@ export default {
         ]
       },
       {
-        icon: "fa fa-user",
-        text: "Contactos",
+        icon: "fas fa-th",
+        text: "Productos",
         children: [
           { icon: "far fa-circle", text: "Clientes", path: "/persona/page/1/1" },
           { icon: "far fa-circle", text: "Provedores", path: "/persona/page/1/2" }
         ]
       },
       {
-        icon: "fa fa-wrench",
-        text: "Configuración",
+        icon: "fa fa-user",
+        text: "Clientes",
+        children: [
+          { icon: "far fa-circle", text: "Clientes", path: "/persona/page/1/1" },
+          { icon: "far fa-circle", text: "Provedores", path: "/persona/page/1/2" }
+        ]
+      },
+      {
+        icon: "fas fa-dollar-sign",
+        text: "Facturacion",
         children: [
           { icon: "far fa-circle", text: "Opción 1", path: "/configuration/opcion1" },
           { icon: "far fa-circle", text: "Opción 2", path: "/configuration/opcion2" }

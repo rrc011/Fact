@@ -1,8 +1,10 @@
-﻿using Model.Models;
+﻿using LinqKit;
+using Model.Models;
 using Persistence;
 using Service.Interfaces;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Service.Repository
 {
@@ -46,11 +48,11 @@ namespace Service.Repository
             }
         }
 
-        public Pagination<Order> GetAll(int? page)
+        public Pagination<Order> GetAll(int? page, Expression<Func<Order, bool>> expression)
         {
             try
             {
-                var query = _facturacionDbContext.Order.AsQueryable();
+                var query = _facturacionDbContext.Order.AsExpandable().Where(expression).AsQueryable();
 
                 return Pagination<Order>.Create(query, page ?? 1, 5);
             }

@@ -64,7 +64,6 @@ namespace FacturacionApi.Controllers
         }
 
         // GET: api/Warehouse/5
-        [HttpGet("{id}", Name = "Get")]
         [HttpGet("/api/GetWarehouse/{id}")]
         public IActionResult Get(int id)
         {

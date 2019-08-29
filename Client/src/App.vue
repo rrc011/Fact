@@ -4,7 +4,7 @@
       <navegationmenu></navegationmenu>
     </el-aside>
     <el-container>
-      <el-header class="bg-info"><h1>Cabecera</h1></el-header>
+      <el-header class="bg-info"></el-header>
       <el-main>
         <el-row>
           <el-col :span="24">

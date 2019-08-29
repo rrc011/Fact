@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using FacturacionApi.Dto;
 using FacturacionApi.ViewModel;
 using LinqKit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Models;
 using Service.Interfaces;
@@ -25,7 +22,6 @@ namespace FacturacionApi.Controllers
 
         // GET: api/Product
         [HttpGet]
-
         [Route("/api/GetallProduct/{page}/")]
         public IActionResult Get(int? page, string search)
         {
@@ -69,9 +65,7 @@ namespace FacturacionApi.Controllers
         }
 
         // GET: api/Product/5
-        [HttpGet("{id}", Name = "Get")]
-
-        [HttpGet("/api/GetProduct/{id}")]
+        [Route("/api/GetProduct/{id}")]
         public IActionResult Get(int id)
         {
             try

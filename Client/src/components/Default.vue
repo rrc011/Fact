@@ -9,7 +9,6 @@
       <li><b>Axios</b>: para trabajar las peticiones AJAX.</li>
       <li><b>Element Ui</b>: como bootstrap pero hecho y pensando para Vue.</li>
     </ul>
-    <p>Proyecto base desarrollado por Anexsoft. Para visualizar un módulo desarrollado ingresa al menú de Ejemplo.</p>
   </div>
 </template>
 

@@ -1,6 +1,7 @@
 ﻿using Model.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Service.Interfaces
@@ -9,7 +10,7 @@ namespace Service.Interfaces
     {
         bool Add(Order model);
         bool Update(int id, Order model);
-        Pagination<Order> GetAll(int? page);
+        Pagination<Order> GetAll(int? page, Expression<Func<Order, bool>> expression);
         Order Get(int Id);
     }
 }

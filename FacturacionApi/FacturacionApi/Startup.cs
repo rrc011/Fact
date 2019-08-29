@@ -27,9 +27,11 @@ namespace FacturacionApi
             var connection = Configuration.GetConnectionString("Dev");
             services.AddDbContext<FacturacionDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddTransient<IPersonaService, PersonaService>();
-            services.AddTransient<ICategoriaService, CategoriaService>();
-            services.AddTransient<IProductoServicioService, ProductoServicioService>();
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<OrderDetailRepository, OrderDetailRepository>();
 
             // Add Cors
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

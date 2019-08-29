@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using FacturacionApi.Dto;
+using FacturacionApi.ViewModel;
+using LinqKit;
 using Microsoft.AspNetCore.Mvc;
+using Model.Models;
 using Service.Interfaces;
 
 namespace FacturacionApi.Controllers
@@ -18,36 +19,139 @@ namespace FacturacionApi.Controllers
         {
             this.personRepository = personRepository;
         }
+
         // GET: api/Person
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Route("/api/GetallPerson/{page}/")]
+        public IActionResult Get(int? page, string search)
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var predicate = PredicateBuilder.True<Person>();
+                predicate = predicate.And(x => x.Deleted == false);
+
+                if (!string.IsNullOrEmpty(search))
+                    predicate = predicate.And(x => (x.Name.Contains(search) || x.LastName.Contains(search) || x.DNI.Contains(search)));
+
+                var model = personRepository.GetAll(page, predicate);
+
+                var outputmodel = new PersonViewModel()
+                {
+                    PaginationInfo = new PaginationViewModel()
+                    {
+                        HasNextPage = model.HasNextPage,
+                        HasPreviousPage = model.HasPreviousPage,
+                        PageIndex = model.PageIndex,
+                        TotalPages = model.TotalPages,
+                        TRecords = model.TRecords
+                    },
+
+                    Items = model.Select(x => new PersonDto()
+                    {
+                        Name = x.Name,
+                        LastName = x.LastName,
+                        DNI = x.DNI,
+                        Address = x.Address,
+                        Email = x.Email,
+                        Gender = x.Gender,
+                        Phone = x.Phone,
+                        PersonId = x.Id
+                    }).ToList()
+                };
+
+                return Ok(outputmodel);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         // GET: api/Person/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [Route("/api/GetPerson/{id}")]
+        public IActionResult Get(int id)
         {
-            return "value";
+            try
+            {
+                return Ok(personRepository.Get(id));
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
         }
 
         // POST: api/Person
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] PersonDto model)
         {
+            try
+            {
+                return Ok(
+                        personRepository.Add(new Person()
+                        {
+                            Name = model.Name,
+                            LastName = model.LastName,
+                            DNI = model.DNI,
+                            Address = model.Address,
+                            Email = model.Email,
+                            Gender = model.Gender,
+                            Phone = model.Phone
+                        })
+                    );
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
         }
 
         // PUT: api/Person/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] PersonDto model)
         {
+            try
+            {
+                return Ok(
+                         personRepository.Update(id, new Person()
+                         {
+                             Id = model.PersonId,
+                             Name = model.Name,
+                             LastName = model.LastName,
+                             Deleted = model.Deleted,
+                             Address = model.Address,
+                             DNI = model.DNI,
+                             Email = model.Email,
+                             Gender = model.Gender,
+                             Phone = model.Phone
+                         })
+                    );
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            try
+            {
+                return Ok(personRepository.Update(id, new Person()
+                {
+                    Id = id,
+                    Deleted = true
+                }));
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
         }
     }
 }
