@@ -4,6 +4,7 @@ using FacturacionApi.Dto;
 using FacturacionApi.ViewModel;
 using LinqKit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Model.Models;
 using Service.Interfaces;
 
@@ -14,10 +15,12 @@ namespace FacturacionApi.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository productRepository;
+        private readonly IWarehouseRepository warehouseRepository;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductRepository productRepository, IWarehouseRepository warehouseRepository)
         {
             this.productRepository = productRepository;
+            this.warehouseRepository = warehouseRepository;
         }
 
         // GET: api/Product
@@ -48,13 +51,40 @@ namespace FacturacionApi.Controllers
 
                     Items = model.Select(x => new ProductDto()
                     {
+                       ProductId = x.Id,
                        Name = x.Name,
                        Descripcion = x.Descripcion,
                        Price = x.Price,
                        Stock = x.Stock,
-                       WarehouseId = x.WarehouseId
+                       WarehouseId = x.WarehouseId,
+                       WarehouseName = x.Warehouse.Name
                     }).ToList()
                 };
+
+                return Ok(outputmodel);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [HttpGet]
+        [Route("/api/GetallSelectWarehouseProduct/")]
+        public IActionResult Get()
+        {
+            try
+            {
+                var predicate = PredicateBuilder.True<Warehouse>();
+                predicate = predicate.And(x => x.Deleted == false);
+
+                var model = warehouseRepository.GetAll(1, predicate, 1000);
+
+                var outputmodel = model.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
 
                 return Ok(outputmodel);
             }
@@ -70,7 +100,34 @@ namespace FacturacionApi.Controllers
         {
             try
             {
-                return Ok(productRepository.Get(id));
+                var result = productRepository.Get(id);
+
+                var outPutModel = new ProductDto()
+                {
+                    ProductId = result.Id,
+                    Name = result.Name,
+                    Descripcion = result.Descripcion,
+                    Stock = result.Stock,
+                    Price = result.Price,
+                    WarehouseName = result.Warehouse.Name,
+                    WarehouseId = result.WarehouseId
+                };
+
+                return Ok(outPutModel);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
+        [Route("/api/ValidateNameProduct/{id}/{name}")]
+        public IActionResult Get(int id, string name)
+        {
+            try
+            {
+                return Ok(productRepository.ValidateName(id, name));
             }
             catch (Exception e)
             {

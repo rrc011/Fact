@@ -73,7 +73,21 @@ namespace FacturacionApi.Controllers
         {
             try
             {
-                return Ok(personRepository.Get(id));
+                var result = personRepository.Get(id);
+
+                var outPutModel = new PersonDto()
+                {
+                    PersonId = result.Id,
+                    Address = result.Address,
+                    DNI = result.DNI,
+                    Email = result.Email,
+                    Gender = result.Gender,
+                    LastName = result.LastName,
+                    Name = result.Name,
+                    Phone = result.Phone
+                };
+
+                return Ok(outPutModel);
             }
             catch (Exception e)
             {

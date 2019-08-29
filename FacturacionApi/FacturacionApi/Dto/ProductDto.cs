@@ -14,5 +14,6 @@ namespace FacturacionApi.Dto
         public int Stock { get; set; }
         public int WarehouseId { get; set; }
         public bool Deleted { get; set; }
+        public string WarehouseName { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Model.Models;
 using Persistence;
 using Service.Interfaces;
@@ -39,7 +40,7 @@ namespace Service.Repository
         {
             try
             {
-                return _facturacionDbContext.Product.FirstOrDefault(x => x.Id == Id);
+                return _facturacionDbContext.Product.Include(x => x.Warehouse).FirstOrDefault(x => x.Id == Id);
             }
             catch (Exception)
             {
@@ -52,7 +53,8 @@ namespace Service.Repository
         {
             try
             {
-                var query = _facturacionDbContext.Product.AsExpandable().Where(predicate).AsQueryable();
+                var query = _facturacionDbContext.Product.Include(x => x.Warehouse)
+                                                         .AsExpandable().Where(predicate).AsQueryable();
 
                 return Pagination<Product>.Create(query, page ?? 1, 5);
                 
@@ -73,6 +75,7 @@ namespace Service.Repository
                 result.Descripcion = string.IsNullOrEmpty(model.Descripcion) ? result.Descripcion : model.Descripcion;
                 result.Price = model.Price == 0 ? result.Price : model.Price;
                 result.Stock = model.Stock == 0 ? result.Stock : model.Stock;
+                result.WarehouseId = model.WarehouseId == 0 ? result.WarehouseId : model.WarehouseId;
                 result.Deleted = model.Deleted;
                 result.ModifiedDate = DateTime.Now;
 
@@ -91,10 +94,10 @@ namespace Service.Repository
         public bool ValidateName(int ProductId, string name)
         {
             try
-            {
+           {
                 if (ProductId != 0)
                 {
-                    return _facturacionDbContext.Product.Any(x => x.Name == name && x.Id == ProductId && !x.Deleted);
+                    return _facturacionDbContext.Product.Any(x => x.Name == name && x.Id != ProductId && !x.Deleted);
                 }
                 else
                 {

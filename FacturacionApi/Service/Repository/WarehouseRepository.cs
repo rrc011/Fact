@@ -61,6 +61,19 @@ namespace Service.Repository
             }
         }
 
+        public Pagination<Warehouse> GetAll(int? page, Expression<Func<Warehouse, bool>> predicate, int pageSize)
+        {
+            try
+            {
+                var query = _facturacionDbContext.Warehouse.AsExpandable().Where(predicate).AsQueryable();
+                return Pagination<Warehouse>.Create(query, page ?? 1, pageSize);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public bool Update(int id, Warehouse model)
         {
             try
@@ -90,7 +103,7 @@ namespace Service.Repository
             {
                 if (WarehouseId != 0)
                 {
-                    return _facturacionDbContext.Warehouse.Any(x => x.Name == name && x.Id == WarehouseId && !x.Deleted);
+                    return _facturacionDbContext.Warehouse.Any(x => x.Name == name && x.Id != WarehouseId && !x.Deleted);
                 }
                 else
                 {

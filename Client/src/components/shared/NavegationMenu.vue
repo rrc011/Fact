@@ -30,25 +30,21 @@ export default {
         icon: "fas fa-warehouse",
         text: "Almacenes",
         children: [
-          { icon: "far fa-circle", text: "Productos", path: "/configuration/opcion1" },
-          { icon: "far fa-circle", text: "Servicios", path: "/configuration/opcion2" },
-          { icon: "far fa-circle", text: "Categorias", path: "/categoria/page/1" }
+          { icon: "far fa-circle", text: "Listado de Almacenes", path: "/warehouse/page/1" }
         ]
       },
       {
         icon: "fas fa-th",
         text: "Productos",
         children: [
-          { icon: "far fa-circle", text: "Clientes", path: "/persona/page/1/1" },
-          { icon: "far fa-circle", text: "Provedores", path: "/persona/page/1/2" }
+          { icon: "far fa-circle", text: "Listado de Productos", path: "/product/page/1" },
         ]
       },
       {
         icon: "fa fa-user",
         text: "Clientes",
         children: [
-          { icon: "far fa-circle", text: "Clientes", path: "/persona/page/1/1" },
-          { icon: "far fa-circle", text: "Provedores", path: "/persona/page/1/2" }
+          { icon: "far fa-circle", text: "Listado de Clientes", path: "/client/page/1" }
         ]
       },
       {

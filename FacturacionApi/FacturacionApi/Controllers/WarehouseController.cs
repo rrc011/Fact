@@ -50,7 +50,7 @@ namespace FacturacionApi.Controllers
                     {
                         WarehouseId = x.Id,
                         Name = x.Name,
-                        Descripcion = x.Descripcion,
+                        Description = x.Descripcion,
                         Location = x.Location
                     }).ToList()
                 };
@@ -78,6 +78,20 @@ namespace FacturacionApi.Controllers
             }
         }
 
+        [HttpGet("/api/ValidateNameWarehouse/{warehouseId}/{name}")]
+        public IActionResult Get(int warehouseId, string name)
+        {
+            try
+            {
+                return Ok(warehouseRepository.ValidateName(warehouseId, name));
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
         // POST: api/Warehouse
         [HttpPost]
         public IActionResult Post([FromBody] WarehouseDto model)
@@ -88,7 +102,7 @@ namespace FacturacionApi.Controllers
                         warehouseRepository.Add(new Warehouse()
                         {
                             Name = model.Name,
-                            Descripcion = model.Descripcion,
+                            Descripcion = model.Description,
                             Location = model.Location
                         })
                     );
@@ -111,7 +125,7 @@ namespace FacturacionApi.Controllers
                          {
                              Id = model.WarehouseId,
                              Name = model.Name,
-                             Descripcion = model.Descripcion,
+                             Descripcion = model.Description,
                              Deleted = model.Deleted
                          })
                     );

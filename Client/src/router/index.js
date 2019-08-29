@@ -6,10 +6,13 @@ import ExampleIndex from '@/components/example/Index'
 import ExampleView from '@/components/example/View'
 import PersonaIndex from '@/components/Persona/Index'
 import PersonaCreateOrUpdate from '@/components/Persona/CreateOrUpdate'
-import CategoriaIndex from '@/components/Categoria/Index'
-import CategoriaCreateOrUpdate from '@/components/Categoria/CreateOrUpdate'
-import ProductServiceIndex from '@/components/ProductoServicio/Index'
-import ProductServiceCreateOrUpdate from '@/components/ProductoServicio/CreateOrUpdate'
+import WarehouseIndex from '@/components/Warehouse/Index'
+import WarehouseCreateOrUpdate from '@/components/Warehouse/CreateOrUpdate'
+import ProductIndex from '@/components/Products/Index'
+import ProductCreateOrUpdate from '@/components/Products/CreateOrUpdate'
+import ClientIndex from '@/components/Clients/Index'
+import ClientCreateOrUpdate from '@/components/Clients/CreateOrUpdate'
+
 
 Vue.use(Router)
 
@@ -20,12 +23,15 @@ const routes = [
   { path: '/persona/page/:page/:tipo', name: 'Persona', component: PersonaIndex },
   { path: '/persona/add/:tipo', name: 'PersonaCreate', component: PersonaCreateOrUpdate },
   { path: '/persona/:id/edit', name: 'PersonaEdit', component: PersonaCreateOrUpdate },
-  { path: '/categoria/page/:page', name: 'Categoria', component: CategoriaIndex },
-  { path: '/categoria/add/', name: 'CategoriaCreate', component: CategoriaCreateOrUpdate },
-  { path: '/categoria/:id/edit', name: 'CategoriaEdit', component: CategoriaCreateOrUpdate },
-  { path: '/productservice/page/:page/:tipo', name: 'ProductService', component: ProductServiceIndex },
-  { path: '/productservice/add/:tipo', name: 'ProductServiceCreate', component: ProductServiceCreateOrUpdate },
-  { path: '/productservice/:id/edit', name: 'ProductServiceEdit', component: ProductServiceCreateOrUpdate }
+  { path: '/warehouse/page/:page', name: 'Warehouse', component: WarehouseIndex},
+  { path: '/warehouse/add/', name: 'WarehouseCreate', component: WarehouseCreateOrUpdate },
+  { path: '/warehouse/:id/edit', name: 'WarehouseEdit', component: WarehouseCreateOrUpdate },
+  { path: '/product/page/:page', name: 'Product', component: ProductIndex},
+  { path: '/product/add/', name: 'ProductCreate', component: ProductCreateOrUpdate },
+  { path: '/product/:id/edit', name: 'ProductEdit', component: ProductCreateOrUpdate },
+  { path: '/client/page/:page', name: 'Client', component: ClientIndex},
+  { path: '/client/add/', name: 'ClientCreate', component: ClientCreateOrUpdate },
+  { path: '/client/:id/edit', name: 'ClientEdit', component: ClientCreateOrUpdate },
 ]
 
 export default new Router({

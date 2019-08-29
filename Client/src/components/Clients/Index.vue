@@ -4,7 +4,7 @@
       <div slot="header" class="clearfix">
         <el-row>
           <el-col :span="4" style="padding-top:10px">
-            <span>Listado de Categorias</span>
+            <span>Listado de Clientes</span>
           </el-col>
           <el-col :span="16">
             <el-input placeholder="Buscar..." v-model="search" class="input-with-select">
@@ -18,7 +18,7 @@
           <el-col :span="4">
             <el-button
               size="small"
-              @click="$router.push(`/categoria/add`)"
+              @click="$router.push(`/client/add`)"
               icon="el-icon-plus"
               style="float: right; margin-top: -0.5%;"
               type="primary"
@@ -27,25 +27,24 @@
         </el-row>
       </div>
       <el-table v-loading="loading" :data="data.items" style="width: 100%">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <p>Descripcion: {{ props.row.descripcion }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column prop="nombre" label="Nombre de Categoria"></el-table-column>
+        <el-table-column prop="dni" label="Cedula"></el-table-column>
+        <el-table-column prop="name" label="Nombre"></el-table-column>
+        <el-table-column prop="lastname" label="Appelido"></el-table-column>
+        <el-table-column prop="email" label="Correo"></el-table-column>
+        <el-table-column prop="gender" label="Genero"></el-table-column>
         <el-table-column>
           <template slot-scope="scope">
-            <el-button-group>
+            <el-button-group size="medium">
               <el-button
                 icon="el-icon-edit-outline"
-                @click="$router.push(`/categoria/${scope.row.categoriaId}/edit`)"
-              >Editar</el-button>
+                @click="$router.push(`/client/${scope.row.PersonId}/edit`)"
+              ></el-button>
               <el-button
                 icon="el-icon-delete"
                 :loading="deleted"
                 type="danger"
-                @click="remove(scope.row.categoriaId, infoPaginacion.actual)"
-              >Borrar</el-button>
+                @click="remove(scope.row.PersonId, infoPaginacion.actual)"
+              ></el-button>
             </el-button-group>
           </template>
         </el-table-column>
@@ -81,7 +80,7 @@
 
 <script>
 export default {
-  name: "CategoriaIndex",
+  name: "client",
   data() {
     return {
       data: [],
@@ -126,11 +125,11 @@ export default {
     getAll(page, search) {
       let self = this;
       self.loading = true;
-      this.$store.state.services.categoriaService
+      this.$store.state.services.ClientService
         .getAll(page, search)
         .then(r => {
+          console.log(r.data.items)
           self.data = r.data;
-          console.log(r.data);
           self.infoPaginacion.total = r.data.paginationInfo.totalPages;
           self.infoPaginacion.actual = r.data.paginationInfo.pageIndex;
           self.infoPaginacion.anterior = r.data.paginationInfo.hasPreviousPage;
@@ -147,7 +146,7 @@ export default {
     remove(id, page) {
       let self = this;
       this.$confirm(
-        "Esto borrará permanentemente la categoria. ¿Continuar?",
+        "Esto borrará permanentemente el almacen. ¿Continuar?",
         "Cuidado!",
         {
           confirmButtonText: "Si",
@@ -167,7 +166,7 @@ export default {
 
       function _remove(_page) {
         self.delete = true;
-        self.$store.state.services.categoriaService.delete(id).then(r => {
+        self.$store.state.servicesclientService.delete(id).then(r => {
           self.getAll(_page, "");
           if (r.data) {
             self.$message({
@@ -187,20 +186,20 @@ export default {
       var p = self.$route.params.page;
       this.infoPaginacion.actual = page;
       this.getAll(page, search);
-      self.$router.push(`/categoria/page/${parseInt(p) + 1}`);
+      self.$router.push(`/client/page/${parseInt(p) + 1}`);
     },
     prev(page, search) {
       let self = this;
       var p = self.$route.params.page;
       this.infoPaginacion.actual = page;
       this.getAll(page, search);
-      self.$router.push(`/categoria/page/${parseInt(p) - 1}`);
+      self.$router.push(`/client/page/${parseInt(p) - 1}`);
     },
     handleCurrentChange(page, search) {
       let self = this;
       self.infoPaginacion.actual = page;
       self.$router.push(
-        `/categoria/page/${parseInt(self.infoPaginacion.actual)}`
+        `/client/page/${parseInt(self.infoPaginacion.actual)}`
       );
       this.getAll(page, search);
     },
