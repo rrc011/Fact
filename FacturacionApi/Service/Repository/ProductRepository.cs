@@ -4,6 +4,7 @@ using Model.Models;
 using Persistence;
 using Service.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -58,6 +59,22 @@ namespace Service.Repository
 
                 return Pagination<Product>.Create(query, page ?? 1, 5);
                 
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<Product> GetAll(Expression<Func<Product, bool>> predicate)
+        {
+            try
+            {
+                var query = _facturacionDbContext.Product.Include(x => x.Warehouse)
+                                                         .AsExpandable().Where(predicate).AsQueryable();
+
+                return query.ToList();
+
             }
             catch (Exception e)
             {

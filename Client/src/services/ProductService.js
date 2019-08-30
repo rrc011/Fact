@@ -12,6 +12,11 @@ class ProductService {
         return self.axios.get(`${self.baseUrl}GetallProduct/${page}?search=${search}`);
     }
 
+    getAllToSell() {
+        let self = this;
+        return self.axios.get(`${self.baseUrl}GetallProductToSell/`);
+    }
+
     get(id) {
         let self = this;
         return self.axios.get(`${self.baseUrl}GetProduct/${id}`);

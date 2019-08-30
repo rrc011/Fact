@@ -70,6 +70,34 @@ namespace FacturacionApi.Controllers
         }
 
         [HttpGet]
+        [Route("/api/GetallProductToSell/")]
+        public IActionResult GetAllToSell()
+        {
+            try
+            {
+                var predicate = PredicateBuilder.True<Product>();
+                predicate = predicate.And(x => x.Deleted == false);
+
+                //if (!string.IsNullOrEmpty(search))
+                //    predicate = predicate.And(x => (x.Name.Contains(search) || x.Descripcion.Contains(search)));
+
+                var model = productRepository.GetAll(predicate);
+
+                var outputmodel = model.Select(x => new
+                {
+                    value = x.Name,
+                    ProductId = x.Id.ToString()
+                }).ToList();
+
+                return Ok(outputmodel);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [HttpGet]
         [Route("/api/GetallSelectWarehouseProduct/")]
         public IActionResult Get()
         {

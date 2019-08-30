@@ -132,7 +132,6 @@ export default {
       this.$store.state.services.ProductService
         .getAll(page, search)
         .then(r => {
-            console.log(r.data.items)
           self.data = r.data;
           self.infoPaginacion.total = r.data.paginationInfo.totalPages;
           self.infoPaginacion.actual = r.data.paginationInfo.pageIndex;
