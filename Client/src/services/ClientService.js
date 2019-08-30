@@ -18,16 +18,25 @@ class ClientService {
     }
 
     add(model) {
-        return this.axios.post(`${this.baseUrl}client/`, model);
+        return this.axios.post(`${this.baseUrl}Person/`, model);
     }
 
     update(model) {
-        return this.axios.put(`${this.baseUrl}client/${model.clientId}/`, model);
+        return this.axios.put(`${this.baseUrl}Person/${model.PersonId}/`, model);
     }
 
     delete(id) {
         let self = this;
-        return self.axios.delete(`${self.baseUrl}client/${id}`);
+        return self.axios.delete(`${self.baseUrl}Person/${id}`);
+    }
+
+    ValidateDNI(personId, dni){
+        return this.axios.get(`${this.baseUrl}ValidateDNI/${personId}/${dni}`)
+    }
+
+    loadSelectPerson(){
+        let self = this;
+        return self.axios.get(`${self.baseUrl}LoadSelectPerson/`);
     }
 }
 

@@ -4,17 +4,21 @@
       <div slot="header" class="clearfix">
         <el-row>
           <el-col :span="4" style="padding-top:10px">
-            <span>Persona</span>
+            <span>Listado de Ventas</span>
           </el-col>
           <el-col :span="16">
             <el-input placeholder="Buscar..." v-model="search" class="input-with-select">
-              <el-button slot="append" icon="el-icon-search" @click="getAll(1, $route.params.tipo, search)"></el-button>
+              <el-button
+                slot="append"
+                icon="el-icon-search"
+                @click="getAll(1, search)"
+              ></el-button>
             </el-input>
           </el-col>
           <el-col :span="4">
             <el-button
               size="small"
-              @click="$router.push(`/persona/add/${$route.params.tipo}`)"
+              @click="$router.push(`/invoicing/add`)"
               icon="el-icon-plus"
               style="float: right; margin-top: -0.5%;"
               type="primary"
@@ -23,22 +27,23 @@
         </el-row>
       </div>
       <el-table v-loading="loading" :data="data.items" style="width: 100%">
-        <el-table-column prop="cedula" label="Documento de Identidad"></el-table-column>
-        <el-table-column prop="nombres" label="Nombres" sortable></el-table-column>
-        <el-table-column prop="apellidos" label="Apellidos" sortable></el-table-column>
+        <el-table-column width="120" prop="orderId" label="Factura Nº"></el-table-column>
+        <el-table-column width="120" prop="clientName" label="Cliente"></el-table-column>
+        <el-table-column width="120" prop="date" label="Fecha"></el-table-column>
+        <el-table-column width="250" prop="total" label="Total"></el-table-column>
         <el-table-column>
           <template slot-scope="scope">
-            <el-button-group>
+            <el-button-group size="medium">
               <el-button
                 icon="el-icon-edit-outline"
-                :loading="deleted"
-                @click="$router.push(`/persona/${scope.row.personaId}/edit`)"
-              >Editar</el-button>
+                @click="$router.push(`/invoicing/${scope.row.orderId}/edit`)"
+              ></el-button>
               <el-button
                 icon="el-icon-delete"
+                :loading="deleted"
                 type="danger"
-                @click="remove(scope.row.personaId, infoPaginacion.actual, $route.params.tipo)"
-              >Borrar</el-button>
+                @click="remove(scope.row.orderId, infoPaginacion.actual)"
+              ></el-button>
             </el-button-group>
           </template>
         </el-table-column>
@@ -74,7 +79,7 @@
 
 <script>
 export default {
-  name: "PersonaIndex",
+  name: "invoicing",
   data() {
     return {
       data: [],
@@ -90,7 +95,10 @@ export default {
     };
   },
   created() {
-    this.getAll(parseInt(this.$route.params.page), parseInt(this.$route.params.tipo), "");
+    this.getAll(
+      parseInt(this.$route.params.page),
+      ""
+    );
   },
   computed: {
     pagesNumber: function() {
@@ -113,11 +121,11 @@ export default {
     }
   },
   methods: {
-    getAll(page, tipo, search) {
+    getAll(page, search) {
       let self = this;
       self.loading = true;
-      this.$store.state.services.personaService
-        .getAll(page, tipo, search)
+      this.$store.state.services.InvoicingService
+        .getAll(page, search)
         .then(r => {
           self.data = r.data;
           self.infoPaginacion.total = r.data.paginationInfo.totalPages;
@@ -133,11 +141,10 @@ export default {
           });
         });
     },
-    remove(id, page, tipo) {
+    remove(id, page) {
       let self = this;
-      self.delete = true;
       this.$confirm(
-        "Esto borrará permanentemente la persona. ¿Continuar?",
+        "Esto borrará permanentemente el almacen. ¿Continuar?",
         "Cuidado!",
         {
           confirmButtonText: "Si",
@@ -145,53 +152,54 @@ export default {
           type: "warning"
         }
       ).then(() => {
-          _remove(page, tipo);
-          self.deleted = false;
-        })
-        .catch(r => {
+          _remove(page);
+      }).catch(r => {
           self.$message({
             message: "Se cancelo la operacion",
             type: "warning"
           });
-        });
+      }).finally(r => {
+          this.deleted = false;
+      });
 
-      function _remove(_page, tipo) {
-        self.$store.state.services.personaService.delete(id).then(r => {
-          self.getAll(_page, tipo, "");
-          if(r.data){
+      function _remove(_page) {
+        self.delete = true;
+        self.$store.state.services.InvoicingService.delete(id).then(r => {
+          self.getAll(_page, "");
+          if (r.data) {
             self.$message({
-              message: "La Persona se elimino con exito",
+              message: "La Categoria se elimino con exito",
               type: "success"
             });
-          }else{
+          } else {
             self.$message({
               message: "Ocurrio un error inesperado",
               type: "error"
-            });          
+            });
           }
         });
       }
     },
-    next(page, tipo, search) {
+    next(page, search) {
       var p = self.$route.params.page;
       this.infoPaginacion.actual = page;
-      this.getAll(page,tipo, search);
-      self.$router.push(`/persona/page/${parseInt(p) + 1}/${parseInt(tipo)}`);
+      this.getAll(page, search);
+      self.$router.push(`/client/page/${parseInt(p) + 1}`);
     },
-    prev(page, tipo, search) {
+    prev(page, search) {
       let self = this;
       var p = self.$route.params.page;
       this.infoPaginacion.actual = page;
-      this.getAll(page, tipo, search);
-      self.$router.push(`/persona/page/${parseInt(p) - 1}/${parseInt(tipo)}`);
+      this.getAll(page, search);
+      self.$router.push(`/client/page/${parseInt(p) - 1}`);
     },
-    handleCurrentChange(page, tipo, search) {
+    handleCurrentChange(page, search) {
       let self = this;
       self.infoPaginacion.actual = page;
       self.$router.push(
-        `/persona/page/${parseInt(self.infoPaginacion.actual)}/${parseInt(tipo)}`
+        `/client/page/${parseInt(self.infoPaginacion.actual)}`
       );
-      this.getAll(page, tipo, search);
+      this.getAll(page, search);
     },
     isActive: function(page) {
       return this.infoPaginacion.actual == page ? "active" : "";

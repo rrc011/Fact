@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace FacturacionApi.Dto
+﻿namespace FacturacionApi.Dto
 {
     public class PersonDto
     {
@@ -16,5 +11,6 @@ namespace FacturacionApi.Dto
         public string Email { get; set; }
         public string Address { get; set; }
         public bool Deleted { get; set; }
+        public string GenderName { get; set; }
     }
 }

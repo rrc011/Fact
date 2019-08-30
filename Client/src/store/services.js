@@ -1,9 +1,8 @@
 import Axios from 'axios'
-import exampleService from '../services/ExampleService'
-import PersonaService from '../services/PersonaService'
 import WarehouseService from '../services/WarehouseService'
 import ProductService from '../services/ProductService'
 import ClientService from '../services/ClientService'
+import InvoicingService from '../services/Invoicing'
 
 let apiUrl = 'http://localhost:58416/api/'
 
@@ -11,9 +10,8 @@ let apiUrl = 'http://localhost:58416/api/'
 Axios.defaults.headers.common.Accept = 'application/json'
 
 export default {
-    exampleService: new exampleService(Axios),
-    personaService: new PersonaService(Axios, apiUrl),
     WarehouseService: new WarehouseService(Axios, apiUrl),
     ProductService: new ProductService(Axios, apiUrl),
-    ClientService: new ClientService(Axios, apiUrl)
+    ClientService: new ClientService(Axios, apiUrl),
+    InvoicingService: new InvoicingService(Axios, apiUrl)
 }

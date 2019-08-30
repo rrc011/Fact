@@ -40,13 +40,13 @@
               <el-button
                 icon="el-icon-edit-outline"
                 @click="$router.push(`/warehouse/${scope.row.warehouseId}/edit`)"
-              >Editar</el-button>
+              ></el-button>
               <el-button
                 icon="el-icon-delete"
                 :loading="deleted"
                 type="danger"
                 @click="remove(scope.row.warehouseId, infoPaginacion.actual)"
-              >Borrar</el-button>
+              ></el-button>
             </el-button-group>
           </template>
         </el-table-column>

@@ -6,6 +6,7 @@ using LinqKit;
 using Microsoft.AspNetCore.Mvc;
 using Model.Models;
 using Service.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FacturacionApi.Controllers
 {
@@ -55,7 +56,8 @@ namespace FacturacionApi.Controllers
                         Email = x.Email,
                         Gender = x.Gender,
                         Phone = x.Phone,
-                        PersonId = x.Id
+                        PersonId = x.Id,
+                        GenderName = x.Gender == 1 ? "Masculino" : "Femenino"
                     }).ToList()
                 };
 
@@ -84,7 +86,8 @@ namespace FacturacionApi.Controllers
                     Gender = result.Gender,
                     LastName = result.LastName,
                     Name = result.Name,
-                    Phone = result.Phone
+                    Phone = result.Phone,
+                    GenderName = result.Gender == 1 ? "Masculino" : "Femenino"
                 };
 
                 return Ok(outPutModel);
@@ -92,6 +95,21 @@ namespace FacturacionApi.Controllers
             catch (Exception e)
             {
 
+                throw e;
+            }
+        }
+
+        [Route("/api/ValidateDNI/{personId}/{dni}")]
+        public IActionResult Get(int personId, string dni)
+        {
+            try
+            {
+                var result = personRepository.ValidateDNI(personId, dni);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
                 throw e;
             }
         }
@@ -164,6 +182,31 @@ namespace FacturacionApi.Controllers
             catch (Exception e)
             {
 
+                throw e;
+            }
+        }
+
+        [HttpGet]
+        [Route("/api/LoadSelectPerson/")]
+        public IActionResult Get()
+        {
+            try
+            {
+                var predicate = PredicateBuilder.True<Person>();
+                predicate = predicate.And(x => x.Deleted == false);
+
+                var model = personRepository.GetAll(1, predicate, 1000);
+
+                var outputmodel = model.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name + " " + u.LastName,
+                    Value = u.Id.ToString()
+                });
+
+                return Ok(outputmodel);
+            }
+            catch (Exception e)
+            {
                 throw e;
             }
         }

@@ -47,7 +47,9 @@ namespace FacturacionApi.Controllers
                         Amount = x.Amount,
                         PersonId = x.PersonId,
                         PersonName = x.Person.Name + " " + x.Person.LastName,
-                        Total = x.OrderDetails.Sum(e => e.Product.Price)
+                        Total = x.OrderDetails.Sum(e => e.Product.Price),
+                        Date = x.CreatedDate.ToString("dd/MM/yyyy"),
+                        OrderId = x.Id
                     }).ToList()
                 };
 

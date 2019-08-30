@@ -51,8 +51,7 @@ export default {
         icon: "fas fa-dollar-sign",
         text: "Facturacion",
         children: [
-          { icon: "far fa-circle", text: "Opción 1", path: "/configuration/opcion1" },
-          { icon: "far fa-circle", text: "Opción 2", path: "/configuration/opcion2" }
+          { icon: "far fa-circle", text: "Listado de Ventas", path: "/invoicing/page/1" }
         ]
       }
     ],

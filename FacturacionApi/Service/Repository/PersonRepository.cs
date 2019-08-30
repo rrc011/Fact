@@ -48,30 +48,27 @@ namespace Service.Repository
             }
         }
 
-        public Pagination<Person> GetAll(int? page, /*string search,*/ Expression<Func<Person, bool>> predicate)
+        public Pagination<Person> GetAll(int? page, Expression<Func<Person, bool>> predicate)
         {
             try
             {
                 var query = _facturacionDbContext.Person.AsExpandable().Where(predicate).AsQueryable();
 
                 return Pagination<Person>.Create(query, page ?? 1, 5);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
 
-                //var predicate = LinqKit.PredicateBuilder.True<Person>();
-                //predicate = predicate.And(x => x.Deleted == false);
+        public Pagination<Person> GetAll(int? page, Expression<Func<Person, bool>> predicate, int pageSize)
+        {
+            try
+            {
+                var query = _facturacionDbContext.Person.AsExpandable().Where(predicate).AsQueryable();
 
-                //if (!string.IsNullOrEmpty(search))
-                //{
-                //    predicate = predicate.And(x => (x.Name.Contains(search) || x.LastName.Contains(search) || x.DNI.Contains(search)));
-                //    var query = _facturacionDbContext.Person.AsExpandable().Where(predicate).AsQueryable();
-
-                //    return Pagination<Person>.Create(query, page ?? 1, 5);
-                //}
-                //else
-                //{
-                //    var query = _facturacionDbContext.Person.AsExpandable().Where(predicate).AsQueryable();
-
-                //    return Pagination<Person>.Create(query, page ?? 1, 5);
-                //}
+                return Pagination<Person>.Create(query, page ?? 1, pageSize);
             }
             catch (Exception e)
             {
@@ -106,17 +103,17 @@ namespace Service.Repository
             }
         }
 
-        public bool ValidateEmail(int PersonId, string name)
+        public bool ValidateDNI(int PersonId, string dni)
         {
             try
             {
                 if (PersonId != 0)
                 {
-                    return _facturacionDbContext.Person.Any(x => x.Name == name && x.Id == PersonId && !x.Deleted);
+                    return _facturacionDbContext.Person.Any(x => x.DNI == dni && x.Id != PersonId && !x.Deleted);
                 }
                 else
                 {
-                    return _facturacionDbContext.Person.Any(x => x.Name == name && !x.Deleted);
+                    return _facturacionDbContext.Person.Any(x => x.DNI == dni && !x.Deleted);
                 }
             }
             catch (Exception e)

@@ -59,9 +59,9 @@
 export default {
   name: "ClientCreateOrUpdate",
   data() {
-    var checkName = (rule, value, callback) => {
+    var checkDNI = (rule, value, callback) => {
         this.$store.state.services.ClientService
-                               .validateName(this.form.clientId, value)
+                               .ValidateDNI(this.form.PersonId, value)
                                .then(r => {
                                   if (r.data) {
                                     callback(new Error("Esta nombre ya esta ocupado"));
@@ -76,7 +76,7 @@ export default {
       selectValue: null,
       form: {
         dni: null,
-        clientId: 0,
+        PersonId: 0,
         name: null,
         lastname: null,
         gender: null,
@@ -92,6 +92,7 @@ export default {
         ],
         dni: [
           {required: true, message: "Debe ingresar una cedula"},
+          { validator: checkDNI, trigger: "blur" },
           { min: 11, max: 11, message: "Debe contener entre 11 caracteres", trigger: 'blur' }
         ],
         lastname: [
@@ -112,7 +113,7 @@ export default {
   },
   computed: {
     pageTitle() {
-      return this.form.clientId === 0 ? "Nuevo Cliente" : this.form.name;
+      return this.form.PersonId === 0 ? "Nuevo Cliente" : this.form.name;
     }
   },
   created() {
@@ -130,14 +131,15 @@ export default {
       self.$store.state.services.ClientService
         .get(id)
         .then(r => {
-          self.form.clientId = r.data.clientId;
+          self.form.PersonId = r.data.personId;
           self.form.name = r.data.name;
-          self.form.lastname = r.data.lastname;
+          self.form.lastname = r.data.lastName;
           self.form.dni = r.data.dni;
           self.form.email = r.data.email;
           self.form.address = r.data.addess;
           self.form.phone = r.data.phone;
-          self.selectValue = r.data.gender
+          self.selectValue = r.data.gender;
+          self.form.gender = r.data.genderName;
           console.log(this.form, r.data)
           self.loading = false;
         })
@@ -150,13 +152,13 @@ export default {
     },
     onSubmit() {
       let self = this;
-      console.log(this.form)
       self.$refs["form"].validate(valid => {
         if (valid) {
           self.loading = true;
-          if (self.form.productId > 0) {
+          if (self.form.PersonId > 0) {
             if(typeof self.form.gender == 'string')
                 self.form.gender = this.selectValue
+            console.log(this.form)
             self.$store.state.services.ClientService
               .update(self.form)
               .then(r => {

@@ -27,23 +27,23 @@
         </el-row>
       </div>
       <el-table v-loading="loading" :data="data.items" style="width: 100%">
-        <el-table-column prop="dni" label="Cedula"></el-table-column>
-        <el-table-column prop="name" label="Nombre"></el-table-column>
-        <el-table-column prop="lastname" label="Appelido"></el-table-column>
-        <el-table-column prop="email" label="Correo"></el-table-column>
-        <el-table-column prop="gender" label="Genero"></el-table-column>
+        <el-table-column width="120" prop="dni" label="Cedula"></el-table-column>
+        <el-table-column width="120" prop="name" label="Nombre"></el-table-column>
+        <el-table-column width="120" prop="lastName" label="Appelido"></el-table-column>
+        <el-table-column width="250" prop="email" label="Correo"></el-table-column>
+        <el-table-column width="120" prop="genderName" label="Genero"></el-table-column>
         <el-table-column>
           <template slot-scope="scope">
             <el-button-group size="medium">
               <el-button
                 icon="el-icon-edit-outline"
-                @click="$router.push(`/client/${scope.row.PersonId}/edit`)"
+                @click="$router.push(`/client/${scope.row.personId}/edit`)"
               ></el-button>
               <el-button
                 icon="el-icon-delete"
                 :loading="deleted"
                 type="danger"
-                @click="remove(scope.row.PersonId, infoPaginacion.actual)"
+                @click="remove(scope.row.personId, infoPaginacion.actual)"
               ></el-button>
             </el-button-group>
           </template>
@@ -128,7 +128,6 @@ export default {
       this.$store.state.services.ClientService
         .getAll(page, search)
         .then(r => {
-          console.log(r.data.items)
           self.data = r.data;
           self.infoPaginacion.total = r.data.paginationInfo.totalPages;
           self.infoPaginacion.actual = r.data.paginationInfo.pageIndex;
@@ -166,7 +165,7 @@ export default {
 
       function _remove(_page) {
         self.delete = true;
-        self.$store.state.servicesclientService.delete(id).then(r => {
+        self.$store.state.services.ClientService.delete(id).then(r => {
           self.getAll(_page, "");
           if (r.data) {
             self.$message({

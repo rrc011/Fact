@@ -7,7 +7,7 @@ namespace FacturacionApi.Dto
         public int OrderId { get; set; }
         public int Amount { get; set; }
         public int PersonId { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public decimal Total { get; set; }
         public string PersonName { get; set; }
         public bool Deleted { get; set; }

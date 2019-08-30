@@ -99,7 +99,7 @@ export default {
           self.form.warehouseId = r.data.id;
           self.form.name = r.data.name;
           self.form.location = r.data.location;
-          self.form.description = r.data.description;
+          self.form.description = r.data.descripcion;
           self.loading = false;
         })
         .catch(r => {
