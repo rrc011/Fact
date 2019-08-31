@@ -10,7 +10,7 @@ This system contains the creation of warehouses, products and customers, to then
 
 ### Installing
 
-- Clone this repo to your desktop and run npm install to install all the dependencies.
+- Clone this repo to your desktop and run npm install in client to install all the dependencies.
 - Run the Web Api FacturacionApi
 - In the client run npm run dev and open browser in route http://localhost:8080/
 
