@@ -5,6 +5,8 @@ using Service.Interfaces;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Service.Repository
 {
@@ -16,7 +18,7 @@ namespace Service.Repository
             _facturacionDbContext = facturacionDbContext;
         }
 
-        public bool Add(Order model)
+        public int Add(Order model)
         {
             try
             {
@@ -28,11 +30,11 @@ namespace Service.Repository
             }
             catch (Exception e)
             {
-                return false;
+                return 0;
                 throw e;
             }
 
-            return true;
+            return model.Id;
         }
 
         public Order Get(int Id)
@@ -52,9 +54,27 @@ namespace Service.Repository
         {
             try
             {
-                var query = _facturacionDbContext.Order.AsExpandable().Where(expression).AsQueryable();
+                var query = _facturacionDbContext.Order.Include(x => x.OrderDetails)
+                                                       .Include(x => x.Person)
+                                                       .AsExpandable().Where(expression).AsQueryable();
 
                 return Pagination<Order>.Create(query, page ?? 1, 5);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<Order> GetAll(Expression<Func<Order, bool>> expression)
+        {
+            try
+            {
+                var query = _facturacionDbContext.Order.Include(x => x.OrderDetails)
+                                                       .Include(x => x.Person)
+                                                       .AsExpandable().Where(expression).AsQueryable();
+
+                return query.ToList();
             }
             catch (Exception e)
             {

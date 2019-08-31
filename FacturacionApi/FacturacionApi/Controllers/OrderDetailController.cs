@@ -4,7 +4,6 @@ using Model.Models;
 using Service.Interfaces;
 using System;
 using LinqKit;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace FacturacionApi.Controllers
@@ -32,18 +31,25 @@ namespace FacturacionApi.Controllers
                 predicate = predicate.And(x => x.Deleted == false && x.OrderId == orderId);
 
                 var model = orderDetailRepository.GetAll(predicate);
+                var listProducts = new List<ProductDto>();
 
-                var outputmodel = model.Select(x => new OrderDetailDto()
+                foreach (var item in model)
                 {
-                    OrderDetailId = x.Id,
-                    OrderId = x.OrderId,
-                    ProductId = x.ProductId,
-                    Quantity = x.Quantity,
-                    ProductName = x.Product.Name,
-                    ProductPrice = x.Product.Price
-                });
+                    var x = productRepository.Get(item.ProductId);
 
-                return Ok(outputmodel);
+                    listProducts.Add(new ProductDto()
+                    {
+                        ProductId = x.Id,
+                        Name = x.Name,
+                        Descripcion = x.Descripcion,
+                        Stock = x.Stock,
+                        Price = x.Price,
+                        WarehouseName = x.Warehouse.Name,
+                        WarehouseId = x.WarehouseId
+                    });
+                }
+
+                return Ok(listProducts);
             }
             catch (Exception e)
             {

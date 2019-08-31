@@ -5,7 +5,7 @@
         <span>{{pageTitle}}</span>
         <el-button
           size="small"
-          @click="$router.push(`/client/page/1`)"
+          @click="$router.push(`/invoicing/page/1`)"
           icon="el-icon-back"
           style="float: right; margin-top: -0.5%;"
           type="primary"
@@ -20,7 +20,7 @@
         label-width="120px"
       >
         <el-form-item label="Cliente" prop="PersonId">
-          <el-select v-model="form.PersonId" placeholder="Select">
+          <el-select v-model="form.PersonId" placeholder="Select" required>
                 <el-option
                 v-for="item in listPerson"
                 :key="item.value"
@@ -43,13 +43,13 @@
           </button>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" icon="el-icon-sell">Vender</el-button>
+            <el-button type="primary" icon="el-icon-sell" @click="onSubmit()">Vender</el-button>
         </el-form-item>
       </el-form>
 
       <hr/>
 
-      <el-table :data="tableDataAdded" style="width: 100%" show-summary>
+      <el-table v-loading="loading" :data="tableDataAdded" style="width: 100%" show-summary>
         <el-table-column prop="codigo" label="Codigo">
         </el-table-column>
         <el-table-column prop="nombre" label="Nombre">
@@ -70,36 +70,17 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <div class="row">
-                  <div class="col-lg-6">
-                    <h5 class="modal-title" id="exampleModalLabel">Buscar productos</h5>
-                  </div>
-                  <div class="col-lg-6">
-                    <el-autocomplete
-                      v-model="state"
-                      :fetch-suggestions="querySearchAsync"
-                      placeholder="Buscar..."
-                      @select="handleSelect(state)">
-                    </el-autocomplete>
-                  </div>
-                </div>
+                <h5 class="modal-title" id="exampleModalLabel">Buscar productos</h5>
             </div>
             <div class="modal-body">
                 <el-table
-                    :data="newtableData"
+                    :data="tableData"
+                    height="250"
                     style="width: 100%">
-                    <el-table-column width="100" label="Codigo" prop="productId"></el-table-column>
+                    <el-table-column fixed width="100" label="Codigo" prop="productId"></el-table-column>
                     <el-table-column width="150" label="Product" prop="name"></el-table-column>
                     <el-table-column width="100" label="Stock" prop="stock"></el-table-column>
                     <el-table-column width="150" label="Precio" prop="price"></el-table-column>
-                    <el-table-column width="150" label="Cant.">
-                        <template slot-scope="scope"> 
-                          <div>
-                            <el-input-number size="mini" :min="1" :max="scope.row.stock" v-model="num"></el-input-number>
-                            <!-- <input type="number" id="{{scope.row.productId}} + '' + {{scope.row.name}}"/> -->
-                            </div>
-                        </template>
-                    </el-table-column>
                     <el-table-column>
                         <template slot-scope="scope">
                             <el-button type="success" @click="addInvoice(scope.row.productId)" icon="el-icon-sold-out" circle>
@@ -125,19 +106,22 @@ export default {
     return {
       loading: false,
       dateState: true,
-      num: [],
       search: null,
+      num: 1,
       date: new Date(),
       listPerson:[],
       tableDataAdded: [],
       tableData: [],
-      newtableData: [],
+      listOrderDetail: [],
       form: {
         Amount: null,
         PersonId: null,
       },
-      state: [],
-      timeout:  null
+      rules: {
+        PersonId: [
+          { type: 'array', required: true, message: 'Por favor seleccione un cliente ', trigger: 'change' }
+        ]
+      }
     };
   },
   computed: {
@@ -155,44 +139,39 @@ export default {
       self.$refs["form"].validate(valid => {
         if (valid) {
           self.loading = true;
-          if (self.form.PersonId > 0) {
-            if(typeof self.form.gender == 'string')
-                self.form.gender = this.selectValue
-            console.log(this.form)
-            self.$store.state.services.ClientService
-              .update(self.form)
-              .then(r => {
-                self.loading = false;
-                self.$router.push(`/client/page/1`);
-                self.$message({
-                  message: "Se actualizo el producto con exito",
-                  type: "success"
-                });
-              })
-              .catch(r => {
-                self.$message({
-                  message: "Ocurrio un error inesperado",
-                  type: "error"
-                });
-              });
-          } else {
-            self.$store.state.services.ClientService
+            for (var i = 0; i < this.tableDataAdded.length; i+=1) {
+              this.form.Amount += this.tableDataAdded[i].total;
+            }
+            self.$store.state.services.InvoicingService
               .add(self.form)
               .then(r => {
-                self.loading = false;
-                self.$router.push(`/client/page/1`);
-                self.$message({
-                  message: "Se guardo el producto con exito",
-                  type: "success"
-                });
+                if(r.data > 0){
+                  for (var i = 0; i < this.tableDataAdded.length; i+=1) {
+                    this.listOrderDetail.push({
+                      "OrderDetailId": 0,
+                      "OrderId": r.data,
+                      "ProductId": this.tableDataAdded[i].codigo,
+                      "Quantity": this.tableDataAdded[i].cantidad
+                    })
+                  }
+                  self.$store.state.services.InvoicingDetailService
+                  .add(this.listOrderDetail)
+                  .then(r => {
+                    self.loading = false;
+                    self.$router.push(`/invoicing/page/1`);
+                    self.$message({
+                      message: "Se guardo con exito",
+                      type: "success"
+                    });
+                  })
+                }
               })
               .catch(r => {
                 self.$message({
-                  message: "Ocurrio un error inesperado",
+                  message: `${r}`,
                   type: "error"
                 });
               });
-          }
         }
       });
     },
@@ -225,36 +204,17 @@ export default {
         });
     },
     addInvoice(productId){
-      var product = this.tableData.items.filter(x => x.productId == productId)
-      console.log(product)
+      var product = this.tableData.filter(x => x.productId == productId)
       var newProduct = {
         "codigo": product[0].productId,
         "nombre": product[0].name,
-        "cantidad": this.num4,
+        "cantidad": this.num,
         "descripcion": product[0].descripcion,
         "precioUnidad": product[0].price,
-        "total": (product[0].price * this.num4)
+        "total": (product[0].price * this.num)
       }
 
       this.tableDataAdded.push(newProduct);
-      //console.log(this.tableDataAdded)
-    },
-     querySearchAsync(queryString, cb) {
-        var links = this.tableData;
-        var results = queryString ? links.filter(this.createFilter(queryString)) : links;
-
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          cb(results);
-        }, 3000 * Math.random());
-      },
-      createFilter(queryString) {
-        return (link) => {
-          return (link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-    handleSelect(item) {
-        this.newtableData = this.tableData.items.filter(x => x.Name == item);
     }
   }
 };

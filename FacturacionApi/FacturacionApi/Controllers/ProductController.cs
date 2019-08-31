@@ -83,11 +83,16 @@ namespace FacturacionApi.Controllers
 
                 var model = productRepository.GetAll(predicate);
 
-                var outputmodel = model.Select(x => new
+                var outputmodel = model.ToList().Select(x => new ProductDto()
                 {
-                    value = x.Name,
-                    ProductId = x.Id.ToString()
-                }).ToList();
+                    ProductId = x.Id,
+                    Name = x.Name,
+                    Descripcion = x.Descripcion,
+                    Stock = x.Stock,
+                    Price = x.Price,
+                    WarehouseName = x.Warehouse.Name,
+                    WarehouseId = x.WarehouseId
+                });
 
                 return Ok(outputmodel);
             }

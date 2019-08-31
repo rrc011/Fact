@@ -7,9 +7,9 @@ class InvoicingService {
         this.baseUrl = `${apiUrl}`
     }
 
-    getAll(page, search) {
+    getAll(page) {
         let self = this;
-        return self.axios.get(`${self.baseUrl}GetallOrder/${page}?search=${search}`);
+        return self.axios.get(`${self.baseUrl}GetallOrder/${page}`);
     }
 
     get(id) {
@@ -28,6 +28,14 @@ class InvoicingService {
     delete(id) {
         let self = this;
         return self.axios.delete(`${self.baseUrl}Order/${id}`);
+    }
+
+    exportPDF() {
+        return `${this.baseUrl}GetPdfOrder`;
+    }
+
+    exportExcel(){
+        return `${this.baseUrl}GetExcelOrder`;
     }
 }
 

@@ -11,7 +11,7 @@ namespace Model.Models
         public int Amount { get; set; }
         [Required]
         public int PersonId { get; set; }
-        public Person Person { get; set; }
-        public IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public virtual Person Person { get; set; }
+        public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace Model.Models
         public string Descripcion { get; set; }
         [StringLength(250)]
         public string Location { get; set; }
-        public IEnumerable<Product> Products { get; set; }
+        public virtual IEnumerable<Product> Products { get; set; }
     }
 }

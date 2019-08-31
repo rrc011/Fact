@@ -10,6 +10,7 @@ import ClientIndex from '@/components/Clients/Index'
 import ClientCreateOrUpdate from '@/components/Clients/CreateOrUpdate'
 import InvoicingIndex from '@/components/Invoicing/Index'
 import InvoicingCreateOrUpdate from '@/components/Invoicing/CreateOrUpdate'
+import InvoicingDetail from '@/components/Invoicing/Detail'
 
 
 Vue.use(Router)
@@ -28,6 +29,7 @@ const routes = [
   { path: '/invoicing/page/:page', name: 'Invoicing', component: InvoicingIndex},
   { path: '/invoicing/add/', name: 'InvoicingCreate', component: InvoicingCreateOrUpdate },
   { path: '/invoicing/:id/edit', name: 'InvoicingEdit', component: InvoicingCreateOrUpdate },
+  { path: '/invoicing/:id/detail', name: 'InvoicingDetail', component: InvoicingDetail },
 ]
 
 export default new Router({

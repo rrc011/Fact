@@ -17,7 +17,7 @@ namespace Model.Models
         [Required]
         public int Stock { get; set; }
         public int WarehouseId { get; set; }
-        public Warehouse Warehouse { get; set; }
-        public IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public virtual Warehouse Warehouse { get; set; }
+        public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
     }
 }
